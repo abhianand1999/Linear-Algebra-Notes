@@ -1,0 +1,249 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{float}
+\usepackage{amsmath}
+
+\title{Linear Algebra}
+\author{Abhinav Anand }
+\date{}
+\maketitle
+\begin{document}
+
+
+\section{Introduction}
+These are my review notes for Linear Algebra -- my attempt at an intuitive explanation. They borrow from 3B1B's Essence of Linear Algebra and Alexander Paulin's Math 54 at Berkeley. 
+
+\section{Vectors, Matrices, Linear Dependence, \& Span}
+
+\subsection{Vectors}
+A vector is a list of numbers that represent an arrow in space. The vector originates at the origin. 
+
+\subsection{Matrices}
+Matrices are lists of vectors with $m$ rows and $n$ columns. Multiplying matrices with dimensions $row_1, col_1$ and $row_2, col_2$ results in a matrix with dimensions $row_1, col_2$. \textbf{Multiplication only works if $col_1 = row_2$}.
+
+\subsection{Linear Dependence \& Independence}
+Two vectors are linearly dependent if one can be expressed as a linear combination of the other. \\ For example, imagine plotting the following vectors: \\
+$u$ $\begin{bmatrix}
+    1 \\
+    2
+\end{bmatrix}$ and $v$ $\begin{bmatrix}
+    2 \\
+    4
+\end{bmatrix}$
+\\
+You'll see that the second is superimposed on the former ($v = 2u$). Thus, they are linearly dependent. The inverse of this is independence. 
+
+\subsection{Span}
+Span is the set of all linear combinations of a vector/vectors. For example, \\ 
+$\begin{bmatrix}
+    1 & 0 \\
+    0 & 1
+\end{bmatrix}$ refers to the pair of unit vectors that span 2D space. Span identifies the range of reachable space!
+
+\subsection{Unit Vectors}
+Unit vectors are vectors with magnitude 1. Can be found via calculating $\frac{v}{|v|}$ -- dividing a vector by its magnitude.
+
+\section{Basis, Linear Transformations, \& Determinant}
+
+\subsection{Basis}
+The basis of a vector space are linearly independent vectors that span the space. I find it easy to think of the unit vectors that span the space. In addition, if you have trouble visualizing linear transformations, I like to think of what the transformation does to the unit vector -- this helps illustrate a "change of basis". 
+\\
+$\begin{bmatrix}
+    1 & 0 \\
+    0 & 1
+\end{bmatrix}$ $\rightarrow$ basis vectors that span 2D space.\\ 
+$\begin{bmatrix}
+    1 & 0 & 0\\
+    0 & 1 & 0 \\
+    0 & 0 & 1
+\end{bmatrix}$ $\rightarrow$ basis vectors that span 3D space.
+
+\subsection{Linear Transformations}
+Linear transformations are defined by two properties after applying them: \begin{itemize}
+    \item Origin remains the same
+    \item Lines remain straight and parallel
+\end{itemize}
+Useful Properties of Linear Transformations:
+$$T(u + v) = T(u) + T(v)$$
+$$T(cu) = cT(u)$$
+\textbf{Orthonormal Transformations} preserve lengths of the basis vectors and perpendicularity between them. \\
+\textbf{Matrix Multiplication} is evaluated as the dot product between the rows of the first matrix and the columns of the second. Canonically, you can think of it as applying the linear transformations defined by the matrices \textbf{right to left}.\\
+$$\begin{bmatrix}
+    a & b \\ c & d
+\end{bmatrix}
+\begin{bmatrix}
+    e & f \\ g & h
+\end{bmatrix} 
+=
+\begin{bmatrix}
+    ae + bg & af + bh \\ ce + dg & cf + dh
+\end{bmatrix}$$ 
+
+\subsection{Determinant}
+The determinant measures how volume changes due to a linear transformation. If the determinant is 0, you can imagine we've compressed the volume such that we're in a lower dimension. \\
+For example, if you're in 3D space and an operation takes you to 2D space, your determinant will be 0.\\
+In other words, the transformation is lossy and undoing it is not possible. This lends itself to a nice property to think of -- when the determinant is 0, the linear transformation is \textbf{not} invertible.
+
+\section{Rank, Column Space, \& Null Space}
+
+\subsection{Rank}
+Rank is the dimensionality of the vector space spanned by a matrix's vectors. Convince yourself of the following: $rank(M) \leq min(\# rows, \#cols)$ \\
+
+$\begin{bmatrix}
+    1 & 2 \\
+    2 & 4 
+\end{bmatrix}$, this matrix has linearly dependent vectors. Thus, the rank is 1. 
+
+\subsection{Column Space \& Null Space}
+Column space $\rightarrow$ all linear combinations reachable from a matrix.\\Null space $\rightarrow$ all input vectors that get mapped to 0 due to a transformation. \\ You can find null space by solving $Ax=0$ for x. \\Rank-Nullity Theorem: $dim(Space) = dim(colSpace) + dim(nullSpace)$
+
+\section{Projections, Least Squares, Dot Products \& Cross Products}
+Dot Products are used to measure similarity, cross products dissimilarity.
+
+\subsection{Norm, Projections, \& Least-Squares}
+Norm is the length of a vector. \\
+
+$v = \begin{bmatrix}
+    1\\2
+\end{bmatrix}$,
+$L_1 Norm = |1| + |2|$\\\\
+$L_2 Norm = \sqrt{1^2 + 2^2}$ \\
+Projections identify the closest point from the tip of vector $v$ onto another $u$.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{projection.png}
+    \caption{Projection}
+    \label{fig:placeholder}
+\end{figure}
+\\
+Notation: $proj_uv$ is interpreted as projecting $v$ onto $u$. \\
+In the image above, you can see how the error line, calculated at $v - proj_uv$ is necessarily perpendicular -- any other projection cannot be closer. This idea is crucial to understanding least squares. \\\\
+Least squares is a projection into a higher dimensional space. \\ The goal is to solve a system of equations $Ax = b$. We're looking to approximate $\hat{x}$. We want to minimize errors $b - A\hat{x}$. This means that the errors must be perpendicular to A's space. \\
+Now, we can derive the formula to solve least squares! \\
+\textit{$A^T$ is used because $\hat{x}$ must be perpendicular to each of A's columns - transposing during multiplication captures that.}\\\\
+$A^T(error) = 0$, from the null space formula.\\
+$A^T(b - A\hat{x}) = 0$\\
+$A^Tb - A^TA\hat{x} = 0$\\
+$A^Tb = A^TA\hat{x}$\\
+$\hat{x} = (A^TA)^{-1}(A^Tb)$
+
+\subsection{Cosine \& Sine}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{cosine_sine.png}
+    \caption{Cosine \& Sine Waves}
+    \label{Cosine & Sine Waves}
+\end{figure}
+
+Cosine is used to measure similarity -- i.e. if angle between two lines is 0, $cos(0) = 1$. Sine measures dissimilarity, so $sin(0) = sin(\pi) = sin(2\pi) = 0$. Note that when the angle is 180, $sin(\pi) = 0$. You'd visualize two lines with a 180 degree angle as diametrically opposite, but interestingly, the sine operation loses that information.
+
+\subsection{Dot Product}
+Project vector v onto u, and scale by magnitude of u. Mathematically calculated with cosine. Intuitively, imagine how cosine changes as you increase the angle between two vectors.
+
+$$ \mathbf{a} \cdot \mathbf{b} = \|\mathbf{a}\| \|\mathbf{b}\| \cos\theta $$
+
+\begin{itemize}
+    \item If the vectors lie along the same line in the same direction, then the projection has magnitude v and will be scaled by magnitude of u. 
+    \item If perpendicular, projection will have magnitude 0. 
+    \item If opposite directions, projection will have magnitude -v. The negative comes from the 180 degree angle between u and v. 
+\end{itemize}
+
+$\begin{bmatrix}
+    4 \\ 5 \\ 2
+\end{bmatrix}
+\cdot
+\begin{bmatrix}
+    3 \\ 2 \\ 1
+\end{bmatrix}
+= 4 * 3 + 5 * 2 + 2 * 1 = 24
+$
+
+\subsection{Cross Product}
+$$ \mathbf{a} \times \mathbf{b} = \|\mathbf{a}\| \|\mathbf{b}\| \sin\theta \, \hat{n} $$
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{cross_product.png}
+    \caption{Parallelogram created by $v \times w$}
+    \label{fig:placeholder}
+\end{figure}
+\begin{itemize}
+    \item The cross product identifies a vector perpendicular to the two input vectors. The new vector's length is equal to the area of the parallelogram (see diagram above).
+    $$v \times w = \det\begin{bmatrix} \hat{i} & \hat{j} & \hat{k} \\ v_1 & v_2 & v_3 \\ w_1 & w_2 & w_3 \end{bmatrix}$$
+    \item The determinant quantifies how area/volume is scaled because of a linear transformation. The inclusion of the basis vectors $\hat{i}$, $\hat{j}$, and $\hat{k}$ help identify how much the original parallelogram is scaled in the $yz$, $xz$, and $xy$ planes respectively.
+    \item The right hand rule - index finger pointing in direction of $v$, middle in direction of $w$, results in thumb pointing in final direction. So, order matters: $w \times v$ = $-(v \times w)$
+\end{itemize}
+
+\section{Cramer's Rule \& Change of Basis}
+\subsection{Cramer's Rule}
+You have a 3D matrix, M that lands on an output vector of size 3x1. You can solve for the input vector by calculating how the 3 different sides of the parallepiped get scaled by the determinant of M.
+
+\subsection{Change of Basis}
+Changing basis is the same as changing coordinate systems. The canonical 2D basis is defined by the matrix $\begin{bmatrix}
+    1 & 0 \\ 0 & 1
+\end{bmatrix}$ with columns $\hat{i}$ and $\hat{j}$. You can think of an example basis, $B$ with columns $b_1$ and $b_2$ as $\begin{bmatrix}
+    -1 & 2 \\ 3 & 7
+\end{bmatrix}$. The columns of $B$ map $\hat{i}$ to $b_1$ and $\hat{j}$ to $b_2$ respectively.
+\begin{itemize}
+    \item Map vector $v$ from basis $B$ to our canonical basis $\rightarrow Bv$
+    \item Map vector $v$ from our canonical basis to the coordinate system $B \rightarrow B^{-1}v$
+    \item Map matrix transformation $T$ on $v$, both defined in our canonical basis to the coordinate system $B \rightarrow B^{-1}Tv$
+    \item Map matrix transformation $T$ defined in our canonical basis on $v^*$, defined in the coordinate system $B$ to the coordinate system $B \rightarrow B^{-1}TBv^*$\\\textit{This composition of mapping to a coordinate system $B$, then applying a transformation $T$, then back to the destination coordinate system by $B^{-1}$ is called "change of basis".}
+\end{itemize}
+
+\section{Eigenvalues \& Eigenvectors}
+\textbf{Eigenvectors} are vectors that remain on their own span after a linear transformation. These vectors are each scaled by a constant -- the \textbf{eigenvalues}. The vectors help define axes of rotation for a transformation. \\ You can find the eigenvectors $\vec{v}$ and eigenvalues $\lambda$ by solving the equation: $$A\vec{v} = \lambda\vec{v}$$
+$$A\vec{v} = \lambda I\vec{v}$$
+$$A\vec{v} - \lambda I \vec{v} = \vec{0}$$
+$$(A - \lambda I)\vec{v} = \vec{0}$$
+We know that a transformation that maps to the zero vector must have a determinant of 0, therefore $det(A - \lambda I) = 0$. \\ Solutions include the following cases:
+\begin{itemize}
+    \item 1+ eigenvectors
+    \item 1 eigenvector - only one vector stays on its original span (for ex, a shear where $\hat{i}$ remains on its own)
+    \item 0 eigenvectors - all vectors are moved off of their original span
+\end{itemize}
+A diagonal matrix means each basis vector is an eigenvector and the corresponding values on the diagonal are the respective eigenvalues. \\ 
+$\begin{bmatrix}
+    2 & 0 \\ 0 & 1
+\end{bmatrix}$ has eigenvectors $\hat{i}$ and $\hat{j}$ and eigenvalues 2 and 1. \\
+You can diagonalize a matrix $A$ by finding the eigenvectors $V$ and changing bases of $A$ to the eigenvector coordinate system. So, you can diagonalize matrices as follows: $$D=V^{-1}AV$$. SVD generalizes this approach to any matrix.
+
+\section{Singular Value Decomposition \& Principal Component Analysis}
+General Notes: \begin{itemize}
+    \item The eigenvectors of a symmetric matrix are perpendicular. Normalizing these gives us an orthogonal transformation (equivalent to a rotation). Matrix $M$ rotates the standard basis to the eigenvectors, whereas $M^T$ rotates the eigenvectors to the standard basis.
+    \item Rectangular matrices are useful for erasing or introducing dimensionality. $M^a_{2, 3} \times M^b_{3, 2} = M^c_{2, 2}$, in this example, $M^a$ which was in $\Re^3$ will be in $\Re^2.$
+    \item $AA^T$ and $A^TA$ produce symmetric matrices from any matrix (including rectangular matrices). Both of these are \textbf{positive, semi-definite (PSD)}, which means all eigenvalues $\geq 0$.
+\end{itemize}
+\subsection{Singular Value Decomposition (SVD)}
+SVD can decompose \textbf{any} matrix as follows: $$M = U\Sigma V^T$$
+$$U \rightarrow \text{Descending Orthonormal Eigenvectors of } AA^T$$
+$$V \rightarrow \text{Descending Orthonormal Eigenvectors of }A^TA$$
+$$\Sigma \rightarrow \text{Descending Singular Values of} AA^T \text{\& } A^TA \rightarrow \sqrt{\lambda_{1...n}}$$
+Functionally, this formula does the following: 
+\begin{enumerate}
+    \item $V^T$ applies a rotation to the standard basis (input space)
+    \item $\Sigma$ shrinks the dimensionality of the transformation and scales it
+    \item $U$ applies a rotation to the resulting object along the eigenvectors (output space)
+\end{enumerate}
+
+\subsection{Principal Component Analysis (PCA)}
+PCA attempts to reduce the dimensionality of an input dataset. It attempts to identify features that provide the most information about the data - in mathematical terms, it projects the data onto a line that captures most of the data (\textit{maximizes variance}) and distills how much weight to attribute to this projection. It repeats this process, searching subsequently for a perpendicular projection to the prior projections that adds unique information about the dataset. \\\\
+\textbf{Covariance Approach}\\
+Assume $X$ is our feature matrix.
+\begin{enumerate}
+    \item Calculate $N$ - the normalized matrix of $X$ by subtracting the mean of each column from the values. Normalize further by dividing by the standard deviation of each column. 
+    \item Calculate $\Sigma_{cov}$ = $N^TN$. This covariance matrix will be symmetric, so the eigenvectors are perpendicular.
+    \item Divide by the number of samples. Identify the eigenvectors and eigenvalues of the covariance matrix. The largest eigenvalue corresponds to the principal component. 
+    \item \textbf{TLDR} Find eigenvectors and eigenvalues of $N^TN \div \text{rows of N}$
+\end{enumerate}
+\textbf{SVD Approach}\\
+From before,
+$$A = U\Sigma V^{T}$$
+$$A^TA = (U\Sigma V^{T})^T(U\Sigma V^{T})$$
+$$A^TA = V\Sigma ^TU^TU\Sigma V^T$$
+Since $U$ is orthonormal, $U^TU = I$,
+$$A^TA = V\Sigma ^T\Sigma V^T$$
+$$A^TA = VD V^T$$ \textit{D refers to diagonalizing $\Sigma$}. \\
+This shows that SVD automatically calculates the eigenvectors and eigenvalues of a given matrix, so by running SVD we can derive PCA!
+\end{document}
+
